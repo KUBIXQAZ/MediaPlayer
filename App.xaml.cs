@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 
 namespace Media
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
+        public static string filePath;
+        private void App_Startup(object sender, StartupEventArgs e)
+        {
+            if (e.Args != null && e.Args.Length > 0) filePath = e.Args[0];
+            //filePath = "D://Videos/9.mp4";
+            //filePath = "D:/Windows/Pictures/Screenshot (69).png";
+        }
     }
 }

@@ -5,8 +5,124 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Media"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Media" 
+        Height="720" 
+        Width="1280"
+        Loaded="Window_Loaded"
+        WindowStyle="None"
+        Background="#191919"
+        AllowsTransparency="True"
+        ResizeMode="CanResizeWithGrip"
+        BorderThickness="1"
+        BorderBrush="#424242">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="39"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Background="#20252e"
+              MouseLeftButtonDown="DockPanel_MouseLeftButtonDown"
+              MouseMove="DockPanel_MouseMove"
+              MouseLeftButtonUp="DockPanel_MouseLeftButtonUp">
+            <!--window controls-->
+            <DockPanel HorizontalAlignment="Right"
+               Grid.Column="2">
+                <Button x:Name="MinimizeWindowB" 
+                Width="15" 
+                Height="15" 
+                BorderBrush="Transparent"
+                Margin="0 0 8 0" 
+                Background="Orange" 
+                Click="MinimizeWindowButton_Click"
+                BorderThickness="0">
+                </Button>
+                <Button x:Name="ResizeB" 
+                Width="15" 
+                Margin="0 0 8 0" 
+                Height="15" 
+                BorderBrush="Transparent"
+                Background="#346de0" 
+                Click="ResizeWindowButton_Click"
+                BorderThickness="0">
+                </Button>
+                <Button x:Name="ExitB" 
+                Width="15" 
+                Margin="0 0 12 0" 
+                BorderBrush="Transparent"
+                Height="15" 
+                Background="Red" 
+                Click="ExitWindowButton_Click"
+                BorderThickness="0">
+                </Button>
+            </DockPanel>
+        </Grid>
+        <!--content-->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <!--previous-->
+                <ColumnDefinition Width="70"/>
+                <!--main-->
+                <ColumnDefinition Width="*"/>
+                <!--next-->
+                <ColumnDefinition Width="70"/>
+            </Grid.ColumnDefinitions>
+            <Image Source="Resources/Images/left_arrow.png"
+                       Cursor="Hand"
+                       Grid.Column="0"
+                       Margin="5,0,5,0"
+                       Width="25"
+                       MouseDown="PreviousButton_Click"></Image>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="30"/>
+                </Grid.RowDefinitions>
+                <MediaElement x:Name="mediaDisplayer"
+                              MediaOpened="mediaDisplayer_MediaOpened"
+                              LoadedBehavior="Manual">
+                </MediaElement>
+                <Image Source="Resources/Images/music.png" 
+                       Width="128"
+                       Visibility="Collapsed"
+                       x:Name="MusicImage"></Image>
+                <StackPanel HorizontalAlignment="Center"
+                            Grid.Row="1" 
+                            x:Name="VideoControls"
+                            Orientation="Horizontal">
+                    <Image Source="Resources/Images/pause.png" 
+                               x:Name="PlayPauseButton"
+                               Cursor="Hand"
+                               MouseDown="OnMouseDownPausePlayMedia" />
+                    <Label Foreground="White" 
+                           VerticalAlignment="Center" 
+                           Content="Volume"></Label>
+                    <Slider Name="volumeSlider" 
+                            VerticalAlignment="Center" 
+                            ValueChanged="ChangeMediaVolume" 
+                            Minimum="0" 
+                            Cursor="Hand"
+                            Maximum="1" 
+                            Value="0.5" 
+                            Width="70"/>
+                    <Label Foreground="White" 
+                           Content="Seek To"
+                           VerticalAlignment="Center"></Label>
+                    <Slider Name="timelineSlider" 
+                            VerticalAlignment="Center" 
+                            Minimum="0" 
+                            Cursor="Hand"
+                            PreviewMouseLeftButtonDown="timelineSlider_MouseDown"
+                            PreviewMouseLeftButtonUp="timelineSlider_MouseUp"
+                            Maximum="1" 
+                            Width="700"/>
+                </StackPanel>
+            </Grid>
+            <Image Source="Resources/Images/right_arrow.png"
+                       Cursor="Hand"
+                       Grid.Column="2"
+                       Margin="5,0,5,0"
+                       Width="25"
+                       MouseDown="NextButton_Click"></Image>
+        </Grid>
     </Grid>
 </Window>
