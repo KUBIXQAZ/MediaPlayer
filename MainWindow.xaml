@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Media"
+        xmlns:mediakit="clr-namespace:WPFMediaKit.DirectShow.Controls;assembly=WPFMediaKit"
         mc:Ignorable="d"
         Title="Media" 
         Height="720" 
@@ -77,10 +78,10 @@
                     <RowDefinition/>
                     <RowDefinition Height="30"/>
                 </Grid.RowDefinitions>
-                <MediaElement x:Name="mediaDisplayer"
+                <mediakit:MediaUriElement x:Name="mediaDisplayer"
                               MediaOpened="mediaDisplayer_MediaOpened"
-                              LoadedBehavior="Manual">
-                </MediaElement>
+                                          LoadedBehavior="Manual">
+                </mediakit:MediaUriElement>
                 <Image Source="Resources/Images/music.png" 
                        Width="128"
                        Visibility="Collapsed"

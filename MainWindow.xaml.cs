@@ -24,7 +24,8 @@ namespace Media
             timer.Interval = TimeSpan.FromMilliseconds(100);
             timer.Tick += (s, e) =>
             {
-                timelineSlider.Value = mediaDisplayer.Position.TotalSeconds;
+                //timelineSlider.Value = mediaDisplayer.Position.TotalSeconds;
+                timelineSlider.Value = mediaDisplayer.MediaPosition;
             };
         }
 
@@ -119,16 +120,17 @@ namespace Media
         }
 
         private void NextButton_Click(object sender, RoutedEventArgs e)
-        {
+        { 
             if (filePath != null)
             {
                 string folder = Path.GetDirectoryName(filePath);
                 string[] files = Directory.GetFiles(folder);
                 int index = Array.IndexOf(files, Path.GetFullPath(filePath));
-
+                
                 if (files.Length > index + 1 && IsAcceptable(files[index + 1]))
                 {
                     mediaDisplayer.Source = new Uri(files[index + 1]);
+                    mediaDisplayer.Play();
                     filePath = files[index + 1];
                 }
             }
@@ -145,6 +147,7 @@ namespace Media
                 if (index - 1 >= 0 && IsAcceptable(files[index - 1]))
                 {
                     mediaDisplayer.Source = new Uri(files[index - 1]);
+                    mediaDisplayer.Play();
                     filePath = files[index - 1];
                 }
             }
@@ -183,7 +186,8 @@ namespace Media
             if (IsVideoAudio(filePath))
             {
                 mediaDisplayer.Volume = (double)volumeSlider.Value;
-                timelineSlider.Maximum = mediaDisplayer.NaturalDuration.TimeSpan.TotalSeconds;
+                //timelineSlider.Maximum = mediaDisplayer.NaturalDuration.TimeSpan.TotalSeconds;
+                timelineSlider.Maximum = mediaDisplayer.MediaDuration;
                 timer.Start();
                 VideoControls.Visibility = Visibility.Visible;
             }
@@ -201,7 +205,8 @@ namespace Media
 
         private void timelineSlider_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            mediaDisplayer.Position = new TimeSpan(0, 0, 0, (int)timelineSlider.Value);
+            //mediaDisplayer.Position = new TimeSpan(0, 0, 0, (int)timelineSlider.Value);
+            mediaDisplayer.MediaPosition = (int)timelineSlider.Value;
 
             timer.Start();
         }
