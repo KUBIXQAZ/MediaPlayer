@@ -25,9 +25,14 @@
               MouseLeftButtonDown="DockPanel_MouseLeftButtonDown"
               MouseMove="DockPanel_MouseMove"
               MouseLeftButtonUp="DockPanel_MouseLeftButtonUp">
+            <Label Content="video.pm4"
+                   Foreground="White"
+                   VerticalAlignment="Center"
+                   x:Name="FileNameLabel"
+                   Margin="10,0,0,0"></Label>
             <!--window controls-->
             <DockPanel HorizontalAlignment="Right"
-               Grid.Column="2">
+                       Margin="10,0,0,0">
                 <Button x:Name="MinimizeWindowB" 
                 Width="15" 
                 Height="15" 
@@ -58,7 +63,8 @@
             </DockPanel>
         </Grid>
         <!--content-->
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1"
+              Margin="10">
             <Grid.ColumnDefinitions>
                 <!--previous-->
                 <ColumnDefinition Width="70"/>
@@ -116,6 +122,9 @@
                             PreviewMouseLeftButtonUp="timelineSlider_MouseUp"
                             Maximum="1" 
                             Width="700"/>
+                    <Label Content="0:00:00/0:00:00"
+                           x:Name="TimeLabel"
+                           Foreground="White"></Label>
                 </StackPanel>
             </Grid>
             <Image Source="Resources/Images/right_arrow.png"

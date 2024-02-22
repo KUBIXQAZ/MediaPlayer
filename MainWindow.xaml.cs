@@ -24,8 +24,12 @@ namespace Media
             timer.Interval = TimeSpan.FromMilliseconds(100);
             timer.Tick += (s, e) =>
             {
-                //timelineSlider.Value = mediaDisplayer.Position.TotalSeconds;
                 timelineSlider.Value = mediaDisplayer.MediaPosition;
+
+                var mediaPosition = TimeSpan.FromTicks(mediaDisplayer.MediaPosition);
+                var mediaDuration = TimeSpan.FromTicks(mediaDisplayer.MediaDuration);
+
+                TimeLabel.Content = $"{mediaDuration.ToString(@"h\:mm\:ss")}/{mediaPosition.ToString(@"h\:mm\:ss")}";
             };
         }
 
@@ -183,6 +187,8 @@ namespace Media
             if(AUDIO_EXTENSIONS.Contains(Path.GetExtension(filePath))) MusicImage.Visibility = Visibility.Visible;
             else MusicImage.Visibility = Visibility.Collapsed;
 
+            FileNameLabel.Content = filePath;
+
             if (IsVideoAudio(filePath))
             {
                 mediaDisplayer.Volume = (double)volumeSlider.Value;
@@ -206,7 +212,7 @@ namespace Media
         private void timelineSlider_MouseUp(object sender, MouseButtonEventArgs e)
         {
             //mediaDisplayer.Position = new TimeSpan(0, 0, 0, (int)timelineSlider.Value);
-            mediaDisplayer.MediaPosition = (int)timelineSlider.Value;
+            mediaDisplayer.MediaPosition = (long)timelineSlider.Value;
 
             timer.Start();
         }
