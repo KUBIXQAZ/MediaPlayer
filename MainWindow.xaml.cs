@@ -11,8 +11,8 @@ namespace Media
 {
     public partial class MainWindow : Window
     {
-        public readonly List<string> IMAGE_EXTENSIONS = new List<string>() { ".png", ".jpg", ".jpeg", ".svg" };
-        public readonly List<string> VIDEO_EXTENSIONS = new List<string>() { ".mp4" };
+        public readonly List<string> IMAGE_EXTENSIONS = new List<string>() { ".png", ".jpg", ".jpeg", ".svg", ".webp" };
+        public readonly List<string> VIDEO_EXTENSIONS = new List<string>() { ".mp4", ".mov" };
         public readonly List<string> AUDIO_EXTENSIONS = new List<string>() { ".mp3" };
 
         DispatcherTimer timer = new DispatcherTimer();
