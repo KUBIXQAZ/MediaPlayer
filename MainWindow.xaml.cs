@@ -6,16 +6,23 @@ using System.Windows.Media.Imaging;
 using System.IO;
 using static Media.App;
 using System.Windows.Threading;
+using Newtonsoft.Json;
 
 namespace Media
 {
     public partial class MainWindow : Window
     {
-        public readonly List<string> IMAGE_EXTENSIONS = new List<string>() { ".png", ".jpg", ".jpeg", ".svg", ".webp" };
-        public readonly List<string> VIDEO_EXTENSIONS = new List<string>() { ".mp4", ".mov" };
-        public readonly List<string> AUDIO_EXTENSIONS = new List<string>() { ".mp3" };
+        public List<string> IMAGE_EXTENSIONS = new List<string>() { ".png", ".jpg", ".jpeg", ".svg", ".webp" };
+        public List<string> VIDEO_EXTENSIONS = new List<string>() { ".mp4", ".mov" };
+        public List<string> AUDIO_EXTENSIONS = new List<string>() { ".mp3" };
 
         DispatcherTimer timer = new DispatcherTimer();
+
+        public static string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        public static string myAppFolder = Path.Combine(appDataPath, "KUBIXQAZ/Media");
+        public static string imageExtensionsFilePath = Path.Combine(myAppFolder, "imageExtensions.json");
+        public static string videoExtensionsFilePath = Path.Combine(myAppFolder, "videoExtensions.json");
+        public static string audioExtensionsFilePath = Path.Combine(myAppFolder, "audioExtensions.json");
 
         public MainWindow()
         {
@@ -31,6 +38,45 @@ namespace Media
 
                 TimeLabel.Content = $"{mediaDuration.ToString(@"h\:mm\:ss")}/{mediaPosition.ToString(@"h\:mm\:ss")}";
             };
+
+            Load_Extensions();
+        }
+
+        private void Load_Extensions()
+        {
+            if(File.Exists(imageExtensionsFilePath))
+            {
+                string json = File.ReadAllText(imageExtensionsFilePath);
+
+                IMAGE_EXTENSIONS = JsonConvert.DeserializeObject<List<string>>(json);
+            }
+
+            if (File.Exists(videoExtensionsFilePath))
+            {
+                string json = File.ReadAllText(videoExtensionsFilePath);
+
+                VIDEO_EXTENSIONS = JsonConvert.DeserializeObject<List<string>>(json);
+            }
+
+            if (File.Exists(audioExtensionsFilePath))
+            {
+                string json = File.ReadAllText(audioExtensionsFilePath);
+
+                AUDIO_EXTENSIONS = JsonConvert.DeserializeObject<List<string>>(json);
+            }
+        }
+
+        private void Save_Extensions()
+        {
+            string jsonImageExtensions = JsonConvert.SerializeObject(IMAGE_EXTENSIONS);
+            string jsonVideoExtensions = JsonConvert.SerializeObject(VIDEO_EXTENSIONS);
+            string jsonAudioExtensions = JsonConvert.SerializeObject(AUDIO_EXTENSIONS);
+
+            if(!Directory.Exists(myAppFolder)) Directory.CreateDirectory(myAppFolder);
+
+            File.WriteAllText(imageExtensionsFilePath, jsonImageExtensions);
+            File.WriteAllText(videoExtensionsFilePath, jsonVideoExtensions);
+            File.WriteAllText(audioExtensionsFilePath, jsonAudioExtensions);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -110,16 +156,16 @@ namespace Media
 
         private bool IsAcceptable(string path)
         {
-            if (IMAGE_EXTENSIONS.Contains(Path.GetExtension(path)) ||
-                VIDEO_EXTENSIONS.Contains(Path.GetExtension(path)) ||
-                AUDIO_EXTENSIONS.Contains(Path.GetExtension(path))) return true;
+            if (IMAGE_EXTENSIONS.Contains(Path.GetExtension(path).ToLower()) ||
+                VIDEO_EXTENSIONS.Contains(Path.GetExtension(path).ToLower()) ||
+                AUDIO_EXTENSIONS.Contains(Path.GetExtension(path).ToLower())) return true;
             else return false;
         }
 
         private bool IsVideoAudio(string path)
         {
-            if (VIDEO_EXTENSIONS.Contains(Path.GetExtension(path)) ||
-                AUDIO_EXTENSIONS.Contains(Path.GetExtension(path))) return true;
+            if (VIDEO_EXTENSIONS.Contains(Path.GetExtension(path).ToLower()) ||
+                AUDIO_EXTENSIONS.Contains(Path.GetExtension(path).ToLower())) return true;
             else return false;
         }
 
