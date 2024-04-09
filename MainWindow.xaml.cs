@@ -24,11 +24,16 @@ namespace Media
         public static string videoExtensionsFilePath = Path.Combine(myAppFolder, "videoExtensions.json");
         public static string audioExtensionsFilePath = Path.Combine(myAppFolder, "audioExtensions.json");
 
+        public string fileUrl;
+        public bool loop = false;
+        public bool startPaused = false;
+
         public MainWindow()
         {
             InitializeComponent();
 
             timer.Interval = TimeSpan.FromMilliseconds(100);
+
             timer.Tick += (s, e) =>
             {
                 timelineSlider.Value = mediaDisplayer.MediaPosition;
@@ -37,6 +42,7 @@ namespace Media
                 var mediaDuration = TimeSpan.FromTicks(mediaDisplayer.MediaDuration);
 
                 TimeLabel.Content = $"{mediaDuration.ToString(@"h\:mm\:ss")}/{mediaPosition.ToString(@"h\:mm\:ss")}";
+                Console.WriteLine($"{mediaDuration.ToString(@"h\:mm\:ss")}/{mediaPosition.ToString(@"h\:mm\:ss")}");
             };
 
             Load_Extensions();
@@ -84,6 +90,7 @@ namespace Media
             if (filePath != null &&
                 IsAcceptable(filePath))
             {
+                fileUrl = filePath;
                 mediaDisplayer.Source = new Uri(filePath);
                 mediaDisplayer.Play();
             }
@@ -227,8 +234,11 @@ namespace Media
 
         private void mediaDisplayer_MediaOpened(object sender, RoutedEventArgs e)
         {
-            isPaused = false;
-            PlayPauseButton.Source = new BitmapImage(new Uri("Resources/Images/pause.png", UriKind.Relative));
+            if(!startPaused)
+            {
+                isPaused = false;
+                PlayPauseButton.Source = new BitmapImage(new Uri("Resources/Images/pause.png", UriKind.Relative));
+            }
             
             if(AUDIO_EXTENSIONS.Contains(Path.GetExtension(filePath))) MusicImage.Visibility = Visibility.Visible;
             else MusicImage.Visibility = Visibility.Collapsed;
@@ -259,8 +269,42 @@ namespace Media
         {
             //mediaDisplayer.Position = new TimeSpan(0, 0, 0, (int)timelineSlider.Value);
             mediaDisplayer.MediaPosition = (long)timelineSlider.Value;
-
             timer.Start();
+        }
+
+        private void mediaDisplayer_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            mediaDisplayer.Source = new Uri(fileUrl);
+
+            if (loop == false)
+            {
+                startPaused = true;
+
+                mediaDisplayer.MediaPosition = mediaDisplayer.MediaDuration - 1;
+
+                PlayPauseButton.Source = new BitmapImage(new Uri("Resources/Images/play.png", UriKind.Relative));
+                mediaDisplayer.Pause();
+                isPaused = true;
+            } else
+            {
+                startPaused = false;
+                isPaused = false;
+                PlayPauseButton.Source = new BitmapImage(new Uri("Resources/Images/play.png", UriKind.Relative));
+                mediaDisplayer.Play();
+            }
+        }
+
+        private void RepeatButton_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            loop = !loop;
+
+            if(loop)
+            {
+                RepeatButton.Source = new BitmapImage(new Uri("Resources/Images/arrow_repeat_on.png", UriKind.Relative));
+            } else
+            {
+                RepeatButton.Source = new BitmapImage(new Uri("Resources/Images/arrow_repeat_off.png", UriKind.Relative));
+            }
         }
     }
 }
