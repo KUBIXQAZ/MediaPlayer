@@ -213,6 +213,11 @@ namespace Media
         bool isPaused = false;
         void OnMouseDownPausePlayMedia(object sender, MouseButtonEventArgs args)
         {
+            if (mediaDisplayer.MediaPosition == mediaDisplayer.MediaDuration - 1 && loop == false && startPaused == true && startPaused == true)
+            {
+
+            }
+
             if (!isPaused)
             {
                 PlayPauseButton.Source = new BitmapImage(new Uri("Resources/Images/play.png", UriKind.Relative));
@@ -248,7 +253,6 @@ namespace Media
             if (IsVideoAudio(filePath))
             {
                 mediaDisplayer.Volume = (double)volumeSlider.Value;
-                //timelineSlider.Maximum = mediaDisplayer.NaturalDuration.TimeSpan.TotalSeconds;
                 timelineSlider.Maximum = mediaDisplayer.MediaDuration;
                 timer.Start();
                 VideoControls.Visibility = Visibility.Visible;
@@ -267,7 +271,6 @@ namespace Media
 
         private void timelineSlider_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            //mediaDisplayer.Position = new TimeSpan(0, 0, 0, (int)timelineSlider.Value);
             mediaDisplayer.MediaPosition = (long)timelineSlider.Value;
             timer.Start();
         }
@@ -280,7 +283,7 @@ namespace Media
             {
                 startPaused = true;
 
-                mediaDisplayer.MediaPosition = mediaDisplayer.MediaDuration - 1;
+                mediaDisplayer.MediaPosition = 0;
 
                 PlayPauseButton.Source = new BitmapImage(new Uri("Resources/Images/play.png", UriKind.Relative));
                 mediaDisplayer.Pause();

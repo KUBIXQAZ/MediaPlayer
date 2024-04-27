@@ -34,31 +34,31 @@
             <DockPanel HorizontalAlignment="Right"
                        Margin="10,0,0,0">
                 <Button x:Name="MinimizeWindowB" 
-                Width="15" 
-                Height="15" 
-                BorderBrush="Transparent"
-                Margin="0 0 8 0" 
-                Background="Orange" 
-                Click="MinimizeWindowButton_Click"
-                BorderThickness="0">
+                        Width="15" 
+                        Height="15" 
+                        BorderBrush="Transparent"
+                        Margin="0 0 8 0" 
+                        Background="Orange" 
+                        Click="MinimizeWindowButton_Click"
+                        BorderThickness="0">
                 </Button>
                 <Button x:Name="ResizeB" 
-                Width="15" 
-                Margin="0 0 8 0" 
-                Height="15" 
-                BorderBrush="Transparent"
-                Background="#346de0" 
-                Click="ResizeWindowButton_Click"
-                BorderThickness="0">
+                        Width="15" 
+                        Margin="0 0 8 0" 
+                        Height="15" 
+                        BorderBrush="Transparent"
+                        Background="#346de0" 
+                        Click="ResizeWindowButton_Click"
+                        BorderThickness="0">
                 </Button>
                 <Button x:Name="ExitB" 
-                Width="15" 
-                Margin="0 0 12 0" 
-                BorderBrush="Transparent"
-                Height="15" 
-                Background="Red" 
-                Click="ExitWindowButton_Click"
-                BorderThickness="0">
+                        Width="15" 
+                        Margin="0 0 12 0" 
+                        BorderBrush="Transparent"
+                        Height="15" 
+                        Background="Red" 
+                        Click="ExitWindowButton_Click"
+                        BorderThickness="0">
                 </Button>
             </DockPanel>
         </Grid>
@@ -74,18 +74,18 @@
                 <ColumnDefinition Width="70"/>
             </Grid.ColumnDefinitions>
             <Image Source="Resources/Images/left_arrow.png"
-                       Cursor="Hand"
-                       Grid.Column="0"
-                       Margin="5,0,5,0"
-                       Width="25"
-                       MouseDown="PreviousButton_Click"></Image>
+                   Cursor="Hand"
+                   Grid.Column="0"
+                   Margin="5,0,5,0"
+                   Width="25"
+                   MouseDown="PreviousButton_Click"/>
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition Height="30"/>
                 </Grid.RowDefinitions>
                 <mediakit:MediaUriElement x:Name="mediaDisplayer"
-                              MediaOpened="mediaDisplayer_MediaOpened"
+                                          MediaOpened="mediaDisplayer_MediaOpened"
                                           MediaEnded="mediaDisplayer_MediaEnded"
                                           LoadedBehavior="Manual">
                 </mediakit:MediaUriElement>
@@ -98,9 +98,9 @@
                             x:Name="VideoControls"
                             Orientation="Horizontal">
                     <Image Source="Resources/Images/pause.png" 
-                               x:Name="PlayPauseButton"
-                               Cursor="Hand"
-                               MouseDown="OnMouseDownPausePlayMedia" />
+                           x:Name="PlayPauseButton"
+                           Cursor="Hand"
+                           MouseDown="OnMouseDownPausePlayMedia" />
                     <Image Source="Resources/Images/arrow_repeat_off.png"
                            x:Name="RepeatButton"
                            Cursor="Hand"
@@ -133,11 +133,11 @@
                 </StackPanel>
             </Grid>
             <Image Source="Resources/Images/right_arrow.png"
-                       Cursor="Hand"
-                       Grid.Column="2"
-                       Margin="5,0,5,0"
-                       Width="25"
-                       MouseDown="NextButton_Click"></Image>
+                   Cursor="Hand"
+                   Grid.Column="2"
+                   Margin="5,0,5,0"
+                   Width="25"
+                   MouseDown="NextButton_Click"></Image>
         </Grid>
     </Grid>
 </Window>
