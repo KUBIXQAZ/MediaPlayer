@@ -27,6 +27,7 @@
               MouseLeftButtonUp="DockPanel_MouseLeftButtonUp">
             <Label Content="video.pm4"
                    Foreground="White"
+                   Visibility="Collapsed"
                    VerticalAlignment="Center"
                    x:Name="FileNameLabel"
                    Margin="10,0,0,0"></Label>
@@ -77,6 +78,8 @@
                    Cursor="Hand"
                    Grid.Column="0"
                    Margin="5,0,5,0"
+                   x:Name="PreviousButton"
+                   Visibility="Collapsed"
                    Width="25"
                    MouseDown="PreviousButton_Click"/>
             <Grid Grid.Column="1">
@@ -93,7 +96,17 @@
                        Width="128"
                        Visibility="Collapsed"
                        x:Name="MusicImage"></Image>
+                <Button Width="50"
+                        Cursor="Hand"
+                        Click="OpenFileButton_Click"
+                        Height="50"
+                        x:Name="OpenFileButton"
+                        BorderBrush="Transparent"
+                        Background="Transparent">
+                    <Image Source="Resources/Images/file_earmark.png"></Image>
+                </Button>
                 <StackPanel HorizontalAlignment="Center"
+                            Visibility="Collapsed"
                             Grid.Row="1" 
                             x:Name="VideoControls"
                             Orientation="Horizontal">
@@ -134,7 +147,9 @@
             </Grid>
             <Image Source="Resources/Images/right_arrow.png"
                    Cursor="Hand"
+                   x:Name="NextButton"
                    Grid.Column="2"
+                   Visibility="Collapsed"
                    Margin="5,0,5,0"
                    Width="25"
                    MouseDown="NextButton_Click"></Image>

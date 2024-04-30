@@ -4,7 +4,6 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.IO;
-using static Media.App;
 using System.Windows.Threading;
 using Newtonsoft.Json;
 
@@ -24,7 +23,7 @@ namespace Media
         public static string videoExtensionsFilePath = Path.Combine(myAppFolder, "videoExtensions.json");
         public static string audioExtensionsFilePath = Path.Combine(myAppFolder, "audioExtensions.json");
 
-        public string fileUrl;
+        public static string fileUrl;
         public bool loop = false;
         public bool startPaused = false;
 
@@ -87,11 +86,9 @@ namespace Media
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (filePath != null &&
-                IsAcceptable(filePath))
+            if (fileUrl != null && IsAcceptable(fileUrl))
             {
-                fileUrl = filePath;
-                mediaDisplayer.Source = new Uri(filePath);
+                mediaDisplayer.Source = new Uri(fileUrl);
                 mediaDisplayer.Play();
             }
         }
@@ -178,34 +175,34 @@ namespace Media
 
         private void NextButton_Click(object sender, RoutedEventArgs e)
         { 
-            if (filePath != null)
+            if (fileUrl != null)
             {
-                string folder = Path.GetDirectoryName(filePath);
+                string folder = Path.GetDirectoryName(fileUrl);
                 string[] files = Directory.GetFiles(folder);
-                int index = Array.IndexOf(files, Path.GetFullPath(filePath));
+                int index = Array.IndexOf(files, Path.GetFullPath(fileUrl));
                 
                 if (files.Length > index + 1 && IsAcceptable(files[index + 1]))
                 {
                     mediaDisplayer.Source = new Uri(files[index + 1]);
                     mediaDisplayer.Play();
-                    filePath = files[index + 1];
+                    fileUrl = files[index + 1];
                 }
             }
         }
 
         private void PreviousButton_Click(object sender, RoutedEventArgs e)
         {
-            if (filePath != null)
+            if (fileUrl != null)
             {
-                string folder = Path.GetDirectoryName(filePath);
+                string folder = Path.GetDirectoryName(fileUrl);
                 string[] files = Directory.GetFiles(folder);
-                int index = Array.IndexOf(files, Path.GetFullPath(filePath));
+                int index = Array.IndexOf(files, Path.GetFullPath(fileUrl));
 
                 if (index - 1 >= 0 && IsAcceptable(files[index - 1]))
                 {
                     mediaDisplayer.Source = new Uri(files[index - 1]);
                     mediaDisplayer.Play();
-                    filePath = files[index - 1];
+                    fileUrl = files[index - 1];
                 }
             }
         }
@@ -213,11 +210,6 @@ namespace Media
         bool isPaused = false;
         void OnMouseDownPausePlayMedia(object sender, MouseButtonEventArgs args)
         {
-            if (mediaDisplayer.MediaPosition == mediaDisplayer.MediaDuration - 1 && loop == false && startPaused == true && startPaused == true)
-            {
-
-            }
-
             if (!isPaused)
             {
                 PlayPauseButton.Source = new BitmapImage(new Uri("Resources/Images/play.png", UriKind.Relative));
@@ -239,18 +231,24 @@ namespace Media
 
         private void mediaDisplayer_MediaOpened(object sender, RoutedEventArgs e)
         {
-            if(!startPaused)
+            OpenFileButton.Visibility = Visibility.Collapsed;
+
+            if (!startPaused)
             {
                 isPaused = false;
                 PlayPauseButton.Source = new BitmapImage(new Uri("Resources/Images/pause.png", UriKind.Relative));
             }
             
-            if(AUDIO_EXTENSIONS.Contains(Path.GetExtension(filePath))) MusicImage.Visibility = Visibility.Visible;
+            if(AUDIO_EXTENSIONS.Contains(Path.GetExtension(fileUrl))) MusicImage.Visibility = Visibility.Visible;
             else MusicImage.Visibility = Visibility.Collapsed;
 
-            FileNameLabel.Content = filePath;
+            FileNameLabel.Content = fileUrl;
 
-            if (IsVideoAudio(filePath))
+            NextButton.Visibility = Visibility.Visible;
+            PreviousButton.Visibility = Visibility.Visible;
+            FileNameLabel.Visibility = Visibility.Visible;
+
+            if (IsVideoAudio(fileUrl))
             {
                 mediaDisplayer.Volume = (double)volumeSlider.Value;
                 timelineSlider.Maximum = mediaDisplayer.MediaDuration;
@@ -307,6 +305,19 @@ namespace Media
             } else
             {
                 RepeatButton.Source = new BitmapImage(new Uri("Resources/Images/arrow_repeat_off.png", UriKind.Relative));
+            }
+        }
+
+        private void OpenFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new Microsoft.Win32.OpenFileDialog();
+            bool? result = dialog.ShowDialog();
+
+            if (result == true)
+            {
+                fileUrl = dialog.FileName;
+                mediaDisplayer.Source = new Uri(fileUrl);
+                mediaDisplayer.Play();
             }
         }
     }
