@@ -8,6 +8,7 @@ using System.Windows.Threading;
 using Newtonsoft.Json;
 using System.Windows.Media;
 using System.Reflection;
+using System.Linq;
 
 namespace Media
 {
@@ -261,9 +262,6 @@ namespace Media
 
         private void mediaDisplayer_MediaOpened(object sender, RoutedEventArgs e)
         {
-            OpenFileButtonBar.Visibility = Visibility.Visible;
-            OpenFileButton.Visibility = Visibility.Collapsed;
-
             if (!startPaused)
             {
                 isPaused = false;
@@ -279,9 +277,18 @@ namespace Media
 
             FileNameLabel.Content = fileUrl;
 
+            string[] files = Directory.GetFiles(Path.GetDirectoryName(fileUrl));
+            string[] visibleFiles = files.Where(file => !File.GetAttributes(file).HasFlag(FileAttributes.Hidden)).ToArray();
+            int allFilesNumber = visibleFiles.Count();
+            int fileNumber = Array.IndexOf(visibleFiles, fileUrl) + 1;
+            FileNumer.Content = $"{fileNumber}/{allFilesNumber}";
+
+            OpenFileButtonBar.Visibility = Visibility.Visible;
+            OpenFileButton.Visibility = Visibility.Collapsed;
             NextButton.Visibility = Visibility.Visible;
             PreviousButton.Visibility = Visibility.Visible;
             FileNameLabel.Visibility = Visibility.Visible;
+            FileNumer.Visibility = Visibility.Visible;
 
             if (IsVideoAudio(fileUrl))
             {
@@ -361,11 +368,6 @@ namespace Media
                 mediaDisplayer.Source = new Uri(fileUrl);
                 mediaDisplayer.Play();
             }
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-
         }
     }
 }
