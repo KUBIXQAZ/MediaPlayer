@@ -6,6 +6,8 @@ using System.Windows.Media.Imaging;
 using System.IO;
 using System.Windows.Threading;
 using Newtonsoft.Json;
+using System.Windows.Media;
+using System.Reflection;
 
 namespace Media
 {
@@ -193,6 +195,29 @@ namespace Media
             }
         }
 
+        private void UpdateArrows()
+        {
+            string folder = Path.GetDirectoryName(fileUrl);
+            string[] files = Directory.GetFiles(folder);
+            int index = Array.IndexOf(files, Path.GetFullPath(fileUrl));
+
+            if (files.Length > index + 1 && IsAcceptable(files[index + 1]))
+            {
+                NextButton.Source = new BitmapImage(new Uri("Resources/Images/right_arrow.png", UriKind.Relative));
+            } else
+            {
+                NextButton.Source = new BitmapImage(new Uri("Resources/Images/arrow_right_gray.png", UriKind.Relative));
+            }
+
+            if (index - 1 >= 0 && IsAcceptable(files[index - 1]))
+            {
+                PreviousButton.Source = new BitmapImage(new Uri("Resources/Images/left_arrow.png", UriKind.Relative));
+            } else
+            {
+                PreviousButton.Source = new BitmapImage(new Uri("Resources/Images/arrow_left_gray.png", UriKind.Relative));
+            }
+        }
+
         private void PreviousButton_Click(object sender, RoutedEventArgs e)
         {
             if (fileUrl != null)
@@ -270,6 +295,8 @@ namespace Media
                 timer.Stop();
                 VideoControls.Visibility = Visibility.Collapsed;
             }
+
+            UpdateArrows();
         }
 
         private void timelineSlider_MouseDown(object sender, MouseButtonEventArgs e)
