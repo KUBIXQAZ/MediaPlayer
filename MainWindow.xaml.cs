@@ -231,6 +231,7 @@ namespace Media
 
         private void mediaDisplayer_MediaOpened(object sender, RoutedEventArgs e)
         {
+            OpenFileButtonBar.Visibility = Visibility.Visible;
             OpenFileButton.Visibility = Visibility.Collapsed;
 
             if (!startPaused)
@@ -310,6 +311,11 @@ namespace Media
 
         private void OpenFileButton_Click(object sender, RoutedEventArgs e)
         {
+            OpenFile();
+        }
+
+        private void OpenFile()
+        {
             var dialog = new Microsoft.Win32.OpenFileDialog();
             bool? result = dialog.ShowDialog();
 
@@ -319,6 +325,11 @@ namespace Media
                 mediaDisplayer.Source = new Uri(fileUrl);
                 mediaDisplayer.Play();
             }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

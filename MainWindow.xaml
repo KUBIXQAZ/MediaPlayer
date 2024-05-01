@@ -25,12 +25,22 @@
               MouseLeftButtonDown="DockPanel_MouseLeftButtonDown"
               MouseMove="DockPanel_MouseMove"
               MouseLeftButtonUp="DockPanel_MouseLeftButtonUp">
-            <Label Content="video.pm4"
-                   Foreground="White"
-                   Visibility="Collapsed"
-                   VerticalAlignment="Center"
-                   x:Name="FileNameLabel"
-                   Margin="10,0,0,0"></Label>
+            <DockPanel>
+                <Button Content="Open New File"
+                        Height="30"
+                        Padding="5,0,5,0"
+                        Click="OpenFileButton_Click"
+                        x:Name="OpenFileButtonBar"
+                        Visibility="Collapsed"
+                        Margin="12 0 0 0">
+                </Button>
+                <Label Content="video.pm4"
+                       Foreground="White"
+                       Visibility="Collapsed"
+                       VerticalAlignment="Center"
+                       x:Name="FileNameLabel"
+                       Margin="10,0,0,0"></Label>
+            </DockPanel>
             <!--window controls-->
             <DockPanel HorizontalAlignment="Right"
                        Margin="10,0,0,0">
