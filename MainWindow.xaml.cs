@@ -41,7 +41,8 @@ namespace Media
                 var mediaDuration = TimeSpan.FromTicks(mediaDisplayer.MediaDuration);
 
                 TimeLabel.Content = $"{mediaDuration.ToString(@"h\:mm\:ss")}/{mediaPosition.ToString(@"h\:mm\:ss")}";
-                Console.WriteLine($"{mediaDuration.ToString(@"h\:mm\:ss")}/{mediaPosition.ToString(@"h\:mm\:ss")}");
+
+                Console.WriteLine($"startpaused {startPaused} paused {isPaused}");
             };
 
             Load_Extensions();
@@ -183,6 +184,8 @@ namespace Media
                 
                 if (files.Length > index + 1 && IsAcceptable(files[index + 1]))
                 {
+                    startPaused = false;
+
                     mediaDisplayer.Source = new Uri(files[index + 1]);
                     mediaDisplayer.Play();
                     fileUrl = files[index + 1];
@@ -200,6 +203,8 @@ namespace Media
 
                 if (index - 1 >= 0 && IsAcceptable(files[index - 1]))
                 {
+                    startPaused = false;
+
                     mediaDisplayer.Source = new Uri(files[index - 1]);
                     mediaDisplayer.Play();
                     fileUrl = files[index - 1];
@@ -238,6 +243,10 @@ namespace Media
             {
                 isPaused = false;
                 PlayPauseButton.Source = new BitmapImage(new Uri("Resources/Images/pause.png", UriKind.Relative));
+            } else
+            {
+                isPaused = true;
+                PlayPauseButton.Source = new BitmapImage(new Uri("Resources/Images/play.png", UriKind.Relative));
             }
             
             if(AUDIO_EXTENSIONS.Contains(Path.GetExtension(fileUrl))) MusicImage.Visibility = Visibility.Visible;
