@@ -38,25 +38,4 @@
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     <PackageReference Include="TagLibSharp" Version="2.3.0" />
   </ItemGroup>
-  <ItemGroup>
-    <None Remove="C:\Users\ADMIN\.nuget\packages\wpfmediakit\2.3.0\build\DirectShowLib-2005.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="C:\Users\ADMIN\.nuget\packages\wpfmediakit\2.3.0\build\EVRPresenter32.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="C:\Users\ADMIN\.nuget\packages\wpfmediakit\2.3.0\build\EVRPresenter64.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="C:\Users\ADMIN\.nuget\packages\wpfmediakit\2.3.0\build\EVRPresenter64.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="C:\Users\ADMIN\.nuget\packages\wpfmediakit\2.3.0\build\EVRPresenter32.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="C:\Users\ADMIN\.nuget\packages\wpfmediakit\2.3.0\build\DirectShowLib-2005.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="C:\Users\ADMIN\.nuget\packages\wpfmediakit\2.3.0\build\DirectShowLib-2005.dll" />
-  </ItemGroup>
 </Project>
