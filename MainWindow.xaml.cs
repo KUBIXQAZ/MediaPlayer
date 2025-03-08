@@ -6,9 +6,9 @@ using System.Windows.Media.Imaging;
 using System.IO;
 using System.Windows.Threading;
 using Newtonsoft.Json;
-using System.Windows.Media;
-using System.Reflection;
 using System.Linq;
+using TagLib;
+using Media.Models;
 
 namespace Media
 {
@@ -25,10 +25,13 @@ namespace Media
         public static string imageExtensionsFilePath = Path.Combine(myAppFolder, "imageExtensions.json");
         public static string videoExtensionsFilePath = Path.Combine(myAppFolder, "videoExtensions.json");
         public static string audioExtensionsFilePath = Path.Combine(myAppFolder, "audioExtensions.json");
+        public static string settingsFilePath = Path.Combine(myAppFolder, "settings.json");
 
         public static string fileUrl;
         public bool loop = false;
         public bool startPaused = false;
+
+        public bool loadedSettings = false;
 
         public MainWindow()
         {
@@ -38,10 +41,10 @@ namespace Media
 
             timer.Tick += (s, e) =>
             {
-                timelineSlider.Value = mediaDisplayer.MediaPosition;
+                timelineSlider.Value = mediaDisplayer.Position.TotalSeconds;
 
-                var mediaPosition = TimeSpan.FromTicks(mediaDisplayer.MediaPosition);
-                var mediaDuration = TimeSpan.FromTicks(mediaDisplayer.MediaDuration);
+                var mediaPosition = mediaDisplayer.Position;
+                var mediaDuration = GetMediaDuration();
 
                 TimeLabel.Content = $"{mediaDuration.ToString(@"h\:mm\:ss")}/{mediaPosition.ToString(@"h\:mm\:ss")}";
 
@@ -49,27 +52,43 @@ namespace Media
             };
 
             Load_Extensions();
+            LoadSettings();
+        }
+
+        private void LoadSettings()
+        {
+            if (System.IO.File.Exists(settingsFilePath))
+            {
+                string json = System.IO.File.ReadAllText(settingsFilePath);
+
+                SettingsModel settings = JsonConvert.DeserializeObject<SettingsModel>(json);
+
+                mediaDisplayer.Volume = settings.Volume;
+                volumeSlider.Value = settings.Volume;
+            }
+
+            loadedSettings = true;
         }
 
         private void Load_Extensions()
         {
-            if(File.Exists(imageExtensionsFilePath))
+            if(System.IO.File.Exists(imageExtensionsFilePath))
             {
-                string json = File.ReadAllText(imageExtensionsFilePath);
+                string json = System.IO.File.ReadAllText(imageExtensionsFilePath);
 
                 IMAGE_EXTENSIONS = JsonConvert.DeserializeObject<List<string>>(json);
             }
 
-            if (File.Exists(videoExtensionsFilePath))
+            if (System.IO.File.Exists(videoExtensionsFilePath))
             {
-                string json = File.ReadAllText(videoExtensionsFilePath);
+                string json = System.IO.File.ReadAllText(videoExtensionsFilePath);
 
                 VIDEO_EXTENSIONS = JsonConvert.DeserializeObject<List<string>>(json);
             }
 
-            if (File.Exists(audioExtensionsFilePath))
+            if (System.IO.File.Exists(audioExtensionsFilePath))
             {
-                string json = File.ReadAllText(audioExtensionsFilePath);
+                string json = System.IO.File.ReadAllText(audioExtensionsFilePath);
 
                 AUDIO_EXTENSIONS = JsonConvert.DeserializeObject<List<string>>(json);
             }
@@ -83,9 +102,9 @@ namespace Media
 
             if(!Directory.Exists(myAppFolder)) Directory.CreateDirectory(myAppFolder);
 
-            File.WriteAllText(imageExtensionsFilePath, jsonImageExtensions);
-            File.WriteAllText(videoExtensionsFilePath, jsonVideoExtensions);
-            File.WriteAllText(audioExtensionsFilePath, jsonAudioExtensions);
+            System.IO.File.WriteAllText(imageExtensionsFilePath, jsonImageExtensions);
+            System.IO.File.WriteAllText(videoExtensionsFilePath, jsonVideoExtensions);
+            System.IO.File.WriteAllText(audioExtensionsFilePath, jsonAudioExtensions);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -177,6 +196,16 @@ namespace Media
             else return false;
         }
 
+        private bool IsVideo(string path)
+        {
+            return VIDEO_EXTENSIONS.Contains(Path.GetExtension(path).ToLower());
+        }
+
+        private bool IsAudio(string path)
+        {
+            return AUDIO_EXTENSIONS.Contains(Path.GetExtension(path).ToLower());
+        }
+
         private void NextButton_Click(object sender, RoutedEventArgs e)
         { 
             if (fileUrl != null)
@@ -255,9 +284,32 @@ namespace Media
             isPaused = !isPaused;
         }
 
+        private TimeSpan GetMediaDuration()
+        {
+            var tfile = TagLib.File.Create(fileUrl);
+            return tfile.Properties.Duration;
+        }
+
         private void ChangeMediaVolume(object sender, RoutedPropertyChangedEventArgs<double> args)
         {
             mediaDisplayer.Volume = (double)volumeSlider.Value;
+
+            if (loadedSettings)
+            {
+                SaveSettings();
+            }       
+        }
+
+        private void SaveSettings()
+        {
+            SettingsModel settings = new SettingsModel()
+            {
+                Volume = mediaDisplayer.Volume
+            };
+
+            string json = JsonConvert.SerializeObject(settings);
+
+            System.IO.File.WriteAllText(settingsFilePath, json);
         }
 
         private void mediaDisplayer_MediaOpened(object sender, RoutedEventArgs e)
@@ -278,7 +330,7 @@ namespace Media
             FileNameLabel.Content = fileUrl;
 
             string[] files = Directory.GetFiles(Path.GetDirectoryName(fileUrl));
-            string[] visibleFiles = files.Where(file => !File.GetAttributes(file).HasFlag(FileAttributes.Hidden)).ToArray();
+            string[] visibleFiles = files.Where(file => !System.IO.File.GetAttributes(file).HasFlag(FileAttributes.Hidden)).ToArray();
             int allFilesNumber = visibleFiles.Count();
             int fileNumber = Array.IndexOf(visibleFiles, fileUrl) + 1;
             FileNumer.Content = $"{fileNumber}/{allFilesNumber}";
@@ -293,7 +345,10 @@ namespace Media
             if (IsVideoAudio(fileUrl))
             {
                 mediaDisplayer.Volume = (double)volumeSlider.Value;
-                timelineSlider.Maximum = mediaDisplayer.MediaDuration;
+
+
+                double s = GetMediaDuration().TotalSeconds;
+                timelineSlider.Maximum = s;
                 timer.Start();
                 VideoControls.Visibility = Visibility.Visible;
             }
@@ -313,7 +368,7 @@ namespace Media
 
         private void timelineSlider_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            mediaDisplayer.MediaPosition = (long)timelineSlider.Value;
+            mediaDisplayer.Position = TimeSpan.FromSeconds(timelineSlider.Value);
             timer.Start();
         }
 
@@ -325,7 +380,7 @@ namespace Media
             {
                 startPaused = true;
 
-                mediaDisplayer.MediaPosition = 0;
+                mediaDisplayer.Position = new TimeSpan();
 
                 PlayPauseButton.Source = new BitmapImage(new Uri("Resources/Images/play.png", UriKind.Relative));
                 mediaDisplayer.Pause();
